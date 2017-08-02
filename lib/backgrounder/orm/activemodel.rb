@@ -27,7 +27,12 @@ module CarrierWave
         end
 
         def _supported_callback
-          respond_to?(:after_commit) ? :after_commit : :after_save
+          test = Rails.env.test? rescue ENV['RAILS_ENV'] == 'test'
+          if respond_to?(:after_commit) and not test
+            :after_commit
+          else
+            :after_save
+          end
         end
       end # ActiveModel
 
